@@ -1,81 +1,58 @@
-# Tactical AI Lab
+# Hell Run Tactical Lab
 
-Native Unreal Engine 5 tactical-AI tooling for scenario authoring, deterministic simulation, map baking, GOAP debugging, and lifetime analysis.
+## Overview
+Hell Run Tactical Lab is an Unreal Engine 5 tactical-AI authoring and analysis environment built around repeatable scenarios rather than one-off debug maps. It combines runtime tactical evaluation with editor-side scenario assets, deterministic simulation, map/surface data, GOAP inspection, and analysis tooling so AI positioning and decision rules can be exercised, compared, and debugged under controlled conditions.
 
-**Version:** 0.1.0  
-**Category:** AI  
-**Status:** Beta  
-**Modules:** `HellRunTacticalLab` (Runtime), `HellRunTacticalLabEditor` (Editor)
+## Features
+- `UTacticalLabScenarioAsset` for reusable authored test scenarios.
+- Runtime `FHellRunTacticalLab` simulation/orchestration layer.
+- `FHellRunTacticalEvaluator` for evaluating tactical choices and candidate states.
+- EQS context integration for tactical query workflows.
+- Integration points for Hell Run GOAP and Traversal Navigation.
+- Dedicated editor asset definition and scenario editing surface.
+- Goal-graph visualization for inspecting scenario/GOAP relationships.
+- Deterministic simulation support for comparing AI behavior across the same setup.
+- Map/surface baking and tactical data preparation tools.
+- Architecture audit/documentation included under `Docs/` for the broader system design.
 
-## Required project plugins
-
-Tactical AI Lab declares these plugin dependencies:
-
-- `HellRunTraversalNavigation`
-- `HellRunGOAP`
-
-Install both before compiling Tactical AI Lab.
+## Architecture
+The plugin is split into runtime and editor modules. Runtime code contains the tactical evaluator, scenario/runtime types, EQS context, and integration hooks. The editor module owns scenario-asset editing and visualization, including the large Tactical Lab surface and goal graph. This keeps the analysis UI out of packaged runtime code while allowing the same scenario data to drive tests and simulations.
 
 ## Installation
-
-From your Unreal project's `Plugins` directory:
-
-```bash
-git clone https://github.com/Andressalazar005/HellRunTraversalNavigation.git HellRunTraversalNavigation
-git clone https://github.com/Andressalazar005/HellRunGOAP.git HellRunGOAP
-git clone https://github.com/Andressalazar005/HellRunTacticalLab.git HellRunTacticalLab
-```
-
-Expected layout:
-
-```text
-YourProject/
-  Plugins/
-    HellRunTraversalNavigation/
-      HellRunTraversalNavigation.uplugin
-    HellRunGOAP/
-      HellRunGOAP.uplugin
-    HellRunTacticalLab/
-      HellRunTacticalLab.uplugin
-```
-
-Then:
-
-1. Close Unreal Editor.
-2. Delete stale `Binaries/` and `Intermediate/` folders from all three plugins if they were built against another engine version.
-3. Regenerate project files if required.
-4. Build your project's **Development Editor** target, or launch Unreal and allow it to compile the source plugins.
-5. Open **Edit > Plugins** and confirm all three plugins are enabled.
-6. Restart the editor if prompted.
-
-## What the plugin provides
-
-- Tactical AI scenario editor tooling.
-- Deterministic simulation support.
-- Map-baking workflow.
-- Integration with GOAP debugging.
-- Lifetime/behavior analysis tooling.
-- Runtime and editor modules with plugin-owned content support.
-
-## Verify the installation
-
-- Confirm `HellRunTraversalNavigation` and `HellRunGOAP` load before Tactical AI Lab.
-- Confirm both Tactical AI Lab modules compile successfully.
-- Open the editor and check the Output Log for missing dependency/module errors.
-- Validate a small tactical scenario before migrating or baking larger maps.
-
-## Updating
-
-Keep all three repositories compatible with one another:
+1. Install **HellRunTraversalNavigation** and **HellRunGOAP** first; both are declared plugin dependencies.
+2. Clone or copy this repository to `<Project>/Plugins/HellRunTacticalLab`.
+3. Delete stale `Binaries` and `Intermediate` directories from all three plugins if they came from another Unreal build.
+4. Regenerate project files and compile your Editor target.
+5. Launch Unreal Editor and verify **Tactical AI Lab**, **Hell Run GOAP**, and **Hell Run Traversal Navigation** are enabled.
+6. Restart the editor if Unreal requests a rebuild.
 
 ```bash
-cd YourProject/Plugins/HellRunTraversalNavigation && git pull
-cd ../HellRunGOAP && git pull
-cd ../HellRunTacticalLab && git pull
+git clone https://github.com/Andressalazar005/HellRunTraversalNavigation.git <Project>/Plugins/HellRunTraversalNavigation
+git clone https://github.com/Andressalazar005/HellRunGOAP.git <Project>/Plugins/HellRunGOAP
+git clone https://github.com/Andressalazar005/HellRunTacticalLab.git <Project>/Plugins/HellRunTacticalLab
 ```
 
-When changing Unreal Engine versions, remove plugin `Binaries/` and `Intermediate/` folders before rebuilding.
+## Basic workflow
+1. Create a Tactical Lab Scenario asset for the encounter or tactical problem you want to test.
+2. Author the scenario inputs, agents, goals, environment/map data, and any required integration data.
+3. Open the Tactical Lab editor surface for that asset.
+4. Bake/update the scenario's map or surface data when the environment changes.
+5. Run deterministic simulations to compare tactical scoring/planning results without relying on a manually played encounter.
+6. Use the goal graph, evaluator output, and GOAP/traversal integration data to understand why a candidate or plan was selected.
+
+## Key types
+- `UTacticalLabScenarioAsset` — reusable authored scenario definition.
+- `FHellRunTacticalLab` — tactical lab runtime/simulation coordinator.
+- `FHellRunTacticalEvaluator` — tactical candidate/state evaluator.
+- `UTacticalLabEQSContext` — EQS bridge for tactical queries.
+- `FTacticalLabIntegrations` — integration surface for external AI/navigation systems.
+
+## Dependencies
+- HellRunGOAP
+- HellRunTraversalNavigation
+
+## Status
+The plugin is currently beta. It is an analysis and development toolset as much as a runtime library; projects integrating it should treat scenario/editor workflows separately from shipping AI code and validate their own tactical scoring assumptions.
 
 ## Support
-
-Use GitHub Issues for reproducible editor, simulation, baking, GOAP-integration, or runtime problems. Include the Unreal Engine version, dependency revisions, reproduction steps, and relevant logs.
+Use GitHub Issues for reproducible editor, simulation, or integration problems. Include your Unreal Engine version, scenario asset, GOAP/traversal versions, expected result, actual result, and relevant logs.
